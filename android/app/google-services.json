@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "271363691020",
+    "project_id": "sra-qatra-a2c68",
+    "storage_bucket": "sra-qatra-a2c68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271363691020:android:f563f7e8b24f08e574d429",
+        "android_client_info": {
+          "package_name": "com.example.sra_qatra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271363691020-4gk41fnqbjmnl1qn659cbnrna5j7h8iu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIDkurqYQtw_Ekw9zEh-wR5hyzWQRyojA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "271363691020-4gk41fnqbjmnl1qn659cbnrna5j7h8iu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
