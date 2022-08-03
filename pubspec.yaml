@@ -33,6 +33,8 @@ dependencies:
   firebase_core: ^1.18.0
   flutter:
     sdk: flutter
+  geocoding: ^2.0.4
+  geolocator: ^9.0.1
   intl: ^0.17.0
   ndialog: ^4.1.1+1
   path_provider: ^2.0.11

@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//the textformfiield is not clear on _formkey.currentState.reset();
+
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
@@ -123,7 +124,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                   nameControler.text.trim(),
                                   fnameControler.text.trim(),
                                   locControler.text.trim());
-                              _fromKey.currentState!.reset();
+                              //_fromKey.currentState!.reset();
+                              emailControler.text = '';
+                              passControler.text = '';
+                              nameControler.text = '';
+                              fnameControler.text = '';
+                              locControler.text = '';
                               dialog.dismiss();
                               displaySnackbar(value);
                             } else {

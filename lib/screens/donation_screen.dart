@@ -1,8 +1,12 @@
+//the textformfiield is not clear on _formkey.currentState.reset();
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
+import 'package:sra_qatra/services/location_service.dart';
 import 'package:sra_qatra/widgets/custom_dropdown.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
@@ -20,7 +24,7 @@ class _DonationScreenState extends State<DonationScreen> {
   final _nameControler = TextEditingController();
   final _locControler = TextEditingController();
   final _phoneControler = TextEditingController();
-  final _fromKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DropdownProvider>(
@@ -39,7 +43,7 @@ class _DonationScreenState extends State<DonationScreen> {
               child: Padding(
                 padding: EdgeInsets.all(Dimension.height10),
                 child: Form(
-                  key: _fromKey,
+                  key: _formKey,
                   child: Column(
                     children: [
                       CircleAvatar(
@@ -54,6 +58,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         controller: _nameControler,
                         icon: Icons.account_circle,
                         labelText: "Name",
+                        onPressed: () {},
                       ),
                       SizedBox(
                         height: Dimension.height8,
@@ -63,6 +68,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         controller: _locControler,
                         icon: Icons.location_on,
                         labelText: "Location",
+                        onPressed: () {},
                       ),
                       SizedBox(
                         height: Dimension.height8,
@@ -73,6 +79,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         icon: Icons.phone,
                         labelText: "Phone",
                         length: 11,
+                        onPressed: () {},
                       ),
                       SizedBox(
                         height: Dimension.height8,
@@ -112,19 +119,39 @@ class _DonationScreenState extends State<DonationScreen> {
                         height: 10,
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          if (_fromKey.currentState!.validate()) {
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
                             if (model.bloodGroup == 'blood group' ||
                                 model.gender == 'gender') {
                               _displaySnackbar(
                                   'please enter bloodGroup or gender ');
                             } else {
-                              FirebaseFirestore.instance
-                                  .collection('donors')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .set({
-                                    
-                                  });
+                              try {
+                                Position position =
+                                    await LocationService.determinePosition();
+                                FirebaseFirestore.instance
+                                    .collection('donors')
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .set({
+                                  'name': _nameControler.text.trim(),
+                                  'location': _locControler.text.trim(),
+                                  'phone': _phoneControler.text.trim(),
+                                  'blood_group': model.bloodGroup,
+                                  'gender': model.gender,
+                                  'date': _dateControler.text.trim(),
+                                  'latitude': position.latitude,
+                                  'longitude': position.longitude
+                                });
+                                //_formKey.currentState!.reset();
+                                _nameControler.text = '';
+                                _locControler.text = '';
+                                _phoneControler.text = '';
+                                _dateControler.text = '';
+                                model.setBloodgroup('blood group');
+                                model.setGender('gender');
+                              } on LocationServiceDisabledException catch (e) {
+                                _displaySnackbar(e.toString());
+                              }
                             }
                           }
                         },

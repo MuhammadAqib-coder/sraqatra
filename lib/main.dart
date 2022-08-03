@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:sra_qatra/screens/blood_request_screen.dart';
 import 'package:sra_qatra/screens/home_screen.dart';
@@ -39,8 +40,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home:
-        StreamBuilder(
+        home: StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -48,8 +48,7 @@ class MyApp extends StatelessWidget {
               } else {
                 return SigninScreen();
               }
-            })
-        );
+            }));
   }
 }
 
@@ -136,4 +135,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  
 }
