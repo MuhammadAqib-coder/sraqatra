@@ -121,20 +121,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return CustomContainer(
-                  location: "islamabad",
-                  bloodGroup: "AB+",
-                  name: "Muhammad Aqib",
-                  gender: "Male",
-                  number: "0234567890",
-                  onPressed: () {},
+              child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('donors').snapshots(),
+            builder: (_, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    return CustomContainer(
+                      checkName: true,
+                      location: snapshot.data!.docs[index]['location'],
+                      bloodGroup: snapshot.data!.docs[index]['blood_group'],
+                      name: snapshot.data!.docs[index]['name'],
+                      gender: snapshot.data!.docs[index]['gender'],
+                      number: snapshot.data!.docs[index]['phone'],
+                    );
+                  },
                 );
-              },
-            ),
-          )
+              } else {
+                return const Center(
+                  child: CustomText(text: 'no donors available'),
+                );
+              }
+            },
+          ))
         ],
       ),
 

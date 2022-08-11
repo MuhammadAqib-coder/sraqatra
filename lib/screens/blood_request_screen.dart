@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sra_qatra/screens/request_blood_screen.dart';
 import 'package:sra_qatra/widgets/custom_container.dart';
@@ -20,22 +21,33 @@ class _BloodRequestScreenState extends State<BloodRequestScreen> {
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
       ),
-      body: ListView.builder(
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return CustomContainer(
-              onPressed: () {},
-              location: "islamabad",
-              bloodGroup: 'AB+',
-              name: "saqib",
-              gender: 'male',
-              number: '1234567890');
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('accepters').snapshots(),
+        builder: (_, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                return CustomContainer(
+                  checkName: false,
+                    location: snapshot.data!.docs[index]['location'],
+                    bloodGroup: snapshot.data!.docs[index]['blood_group'],
+                    bloodAmount: snapshot.data!.docs[index]['blood_amount'],
+                    duration: snapshot.data!.docs[index]['duration'],
+                    number: snapshot.data!.docs[index]['phone']);
+              },
+            );
+          } else {
+            return const Center(
+              child: Text('no accepter found'),
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => RequestBloodScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const RequestBloodScreen()));
         },
         label: Text(
           'be accepter',
