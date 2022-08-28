@@ -3,18 +3,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sra_qatra/screens/blood_request_screen.dart';
 import 'package:sra_qatra/screens/home_screen.dart';
 import 'package:sra_qatra/screens/imran.dart';
+import 'package:sra_qatra/screens/intro_screen.dart';
 import 'package:sra_qatra/screens/landing_screen.dart';
 import 'package:sra_qatra/screens/signin_screen.dart';
 import 'package:sra_qatra/screens/signup_screen.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
+bool show = true;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final prefs = await SharedPreferences.getInstance();
+  //show = prefs.getBool('ON_BOARDING') ?? true;
   runApp(const MyApp());
 }
 
@@ -40,7 +45,8 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: StreamBuilder(
+        home: 
+        StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -48,7 +54,8 @@ class MyApp extends StatelessWidget {
               } else {
                 return SigninScreen();
               }
-            }));
+          })
+           );
   }
 }
 
@@ -135,6 +142,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
-  
 }

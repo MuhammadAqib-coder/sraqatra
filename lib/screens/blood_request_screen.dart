@@ -1,7 +1,10 @@
+//no data found disappear when there is no data
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sra_qatra/screens/request_blood_screen.dart';
 import 'package:sra_qatra/widgets/custom_container.dart';
+import 'package:sra_qatra/widgets/custom_text.dart';
 
 import '../services/dimension.dart';
 
@@ -17,7 +20,7 @@ class _BloodRequestScreenState extends State<BloodRequestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Blood Request"),
+        title: CustomText(text: 'Blood Request',),
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
       ),
@@ -38,8 +41,8 @@ class _BloodRequestScreenState extends State<BloodRequestScreen> {
               },
             );
           } else {
-            return const Center(
-              child: Text('no accepter found'),
+            return  Center(
+              child: CustomText(text: 'No Accepter found'),
             );
           }
         },
@@ -49,10 +52,7 @@ class _BloodRequestScreenState extends State<BloodRequestScreen> {
           Navigator.push(context,
               MaterialPageRoute(builder: (_) => const RequestBloodScreen()));
         },
-        label: Text(
-          'be accepter',
-          style: TextStyle(fontSize: Dimension.height16),
-        ),
+        label: CustomText(text: 'Be Accepter',fontSize: Dimension.height16,),
         icon: const Icon(Icons.add),
         backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
       ),

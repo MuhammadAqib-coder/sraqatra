@@ -7,6 +7,7 @@ import 'package:sra_qatra/services/dimension.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 import 'package:sra_qatra/services/location_service.dart';
 import 'package:sra_qatra/widgets/custom_dropdown.dart';
+import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
 class RequestBloodScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
         builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Request Blood'),
+              title: CustomText(text: 'Request Blood'),
               centerTitle: true,
               backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
             ),
@@ -93,25 +94,34 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                         height: Dimension.height10,
                       ),
                       ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             if (model.bloodGroup == 'blood group') {
                               _displaySnackbar('select blood group');
                             } else {
                               try {
-                                Position position = await LocationService.determinePosition();
+                                Position position =
+                                    await LocationService.determinePosition();
                                 FirebaseFirestore.instance
-                                  .collection('accepters')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .set({
-                                    'location': locControler.text.trim(),
-                                    'blood_amount' : baControler.text.trim(),
-                                    'phone': phoneControler.text.trim(),
-                                    'blood_group': model.bloodGroup,
-                                    'duration': timeControler.text.trim(),
-                                    'latitude':position.latitude,
-                                    'longitude': position.longitude
-                                  });
+                                    .collection('accepters')
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .set({
+                                  'location': locControler.text.trim(),
+                                  'blood_amount': baControler.text.trim(),
+                                  'phone': phoneControler.text.trim(),
+                                  'blood_group': model.bloodGroup,
+                                  'duration': timeControler.text.trim(),
+                                  'latitude': position.latitude,
+                                  'longitude': position.longitude
+                                });
+                                _displaySnackbar('You are now an Accepter');
+                               // _formKey.currentState!.reset();
+                                locControler.text = '';
+                                baControler.text = '';
+                                phoneControler.text = '';
+                                model.setBloodgroup('blood group');
+                                timeControler.text = '';
+
                               } on LocationServiceDisabledException catch (e) {
                                 _displaySnackbar(e.toString());
                               }
@@ -120,7 +130,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                             primary: const Color.fromRGBO(244, 66, 54, 1)),
-                        child: const Text('become accepter'),
+                        child: CustomText(text: 'Become Accepter'),
                       )
                     ],
                   ),

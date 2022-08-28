@@ -1,11 +1,13 @@
 //the textformfiield is not clear on _formkey.currentState.reset();
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 import 'package:sra_qatra/screens/signin_screen.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 import 'package:sra_qatra/services/email_password_auth.dart';
+import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
 import '../services/dimension.dart';
@@ -35,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
-            title: const Text('SignUp'),
+            title: CustomText(text: 'SignUp'),
             centerTitle: true,
           ),
           body: SingleChildScrollView(
@@ -127,6 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               //_fromKey.currentState!.reset();
                               emailControler.text = '';
                               passControler.text = '';
+                              conPassControler.text = '';
                               nameControler.text = '';
                               fnameControler.text = '';
                               locControler.text = '';
@@ -139,15 +142,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                             primary: const Color.fromRGBO(244, 66, 54, 1)),
-                        child: const Text('submit'),
+                        child: CustomText(text: 'submit'),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            'Already have an account?',
-                            style: TextStyle(
-                                color: Color.fromRGBO(244, 66, 54, 1)),
+                          CustomText(
+                            text: 'Already have an Account?',
+                            color: const Color.fromRGBO(244, 66, 54, 1),
                           ),
                           TextButton(
                               onPressed: () {
@@ -156,10 +158,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                     MaterialPageRoute(
                                         builder: (_) => const SigninScreen()));
                               },
-                              child: const Text(
-                                'SignIn',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(244, 66, 54, 1)),
+                              child: CustomText(
+                                text: 'SignIn',
+                                color: const Color.fromRGBO(244, 66, 54, 1),
                               ))
                         ],
                       )

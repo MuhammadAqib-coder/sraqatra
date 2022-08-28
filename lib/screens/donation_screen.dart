@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 import 'package:sra_qatra/services/location_service.dart';
 import 'package:sra_qatra/widgets/custom_dropdown.dart';
+import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
 import '../services/dimension.dart';
@@ -35,7 +36,7 @@ class _DonationScreenState extends State<DonationScreen> {
         builder: ((context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text("JazakAllah ror"),
+              title: CustomText(text: 'JazakAllah ror'),
               centerTitle: true,
               backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
             ),
@@ -149,6 +150,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                 _dateControler.text = '';
                                 model.setBloodgroup('blood group');
                                 model.setGender('gender');
+                                _displaySnackbar('Donor data saved Successfully');
                               } on LocationServiceDisabledException catch (e) {
                                 _displaySnackbar(e.toString());
                               }
@@ -158,7 +160,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         style: ElevatedButton.styleFrom(
                           primary: const Color.fromRGBO(244, 66, 54, 1),
                         ),
-                        child: const Text('ready to donate'),
+                        child: CustomText(text: 'Ready To Donate',fontSize: Dimension.height16,),
                       )
                     ],
                   ),
@@ -172,7 +174,7 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   void _displaySnackbar(value) {
-    var snackBar = SnackBar(content: Text(value));
+    var snackBar = SnackBar(content: Text(value),backgroundColor: const Color.fromRGBO(244, 66, 54, 1),);
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

@@ -6,6 +6,7 @@ class DropdownProvider extends ChangeNotifier {
   int _currentIndex = 1;
   bool _password = true;
   bool _confirmPass = true;
+  String _search = '';
 
   String get bloodGroup {
     return _bloodGroup;
@@ -25,6 +26,10 @@ class DropdownProvider extends ChangeNotifier {
 
   bool get confirmPass {
     return _confirmPass;
+  }
+
+  String get search {
+    return _search;
   }
 
   void setBloodgroup(value) {
@@ -49,6 +54,11 @@ class DropdownProvider extends ChangeNotifier {
 
   void setConfirmPass(value) {
     _confirmPass = value;
+    notifyListeners();
+  }
+
+  void setSearch(value) {
+    _search = value;
     notifyListeners();
   }
 }

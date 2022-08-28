@@ -20,17 +20,18 @@ class EmailPasswordAuth {
   }
 
   Future<String> signUp(String email, String password, String name,
-      String f_name, String location) async {
+      String fName, String location) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = FirebaseAuth.instance.currentUser!;
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'name': name,
-        'f_name': f_name,
+        'f_name': fName,
         'location': location,
         'password': password
       });
+      FirebaseAuth.instance.signOut();
       return 'succssfully SignedUp';
     } on FirebaseAuthException catch (e) {
       //print(e);

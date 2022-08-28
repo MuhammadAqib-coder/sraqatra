@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sra_qatra/services/email_password_auth.dart';
+import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     .resetPassword(emailControler.text.trim());
                 displaySnackbar(value);
               },
-              child: const Text('Reset Password'),
+              child: CustomText(text: 'Reset Password'),
             ),
           )
         ],
