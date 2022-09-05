@@ -1,10 +1,15 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:sra_qatra/screens/donation_screen.dart';
+import 'package:sra_qatra/models/donors_model.dart';
+import 'package:sra_qatra/screens/history_screen.dart';
 import 'package:sra_qatra/services/dimension.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
+import 'package:sra_qatra/services/location_service.dart';
 import 'package:sra_qatra/widgets/custom_text.dart';
 
 import '../widgets/custom_container.dart';
@@ -19,17 +24,62 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //late DropdownProvider provider;
-  final searchControler = TextEditingController();
+  late final searchControler;
+  List<DonorsModel> donorsList = [];
+  List<DonorsModel> donorsSearchList = [];
+  late var provider;
+  //late DocumentSnapshot documentSnapshot;
+  Position? position;
+  double? lat, lng;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    searchControler = TextEditingController();
+  }
+
+  Future<List<DonorsModel>> sortDonorlist() async {
+    position = await LocationService.determinePosition();
+    lat = position!.latitude;
+    lng = position!.longitude;
+    await FirebaseFirestore.instance.collection('donors').get().then((value) {
+      //var list = value.docs;
+      for (var i = 0; i < value.docs.length; i++) {
+        donorsList.add(DonorsModel.fromJson(value.docs[i]));
+        DonorsModel model = donorsList[i];
+        model.distance = calculateDistance(lat, lng, model.lat, model.lng);
+      }
+      // for (DonorsModel model in donorsList) {
+      //   model.distance = calculateDistance(lat, lng, model.lat, model.lng);
+      // }
+      donorsList.sort((a, b) {
+        return b.distance!.compareTo(a.distance!);
+      });
+    });
+    //setState(() {});
+    return donorsList;
+  }
+
+  Future<List<DonorsModel>> searchDonorsList(String search) async {
+    await FirebaseFirestore.instance
+        .collection('donors')
+        .where('blood_group', isEqualTo: search)
+        .get()
+        .then((value) {
+      for (int i = 0; i < value.docs.length; i++) {
+        donorsSearchList.add(DonorsModel.fromJson(value.docs[i]));
+      }
+      //setState(() {});
+    });
+    return donorsSearchList;
+  }
 
   @override
   Widget build(BuildContext context) {
-    //provider = Provider.of<DropdownProvider>(context);
-
-    // print(Dimension.screenHeight);
     return ChangeNotifierProvider<DropdownProvider>(
       create: (context) => DropdownProvider(),
       child: Consumer<DropdownProvider>(
-        builder: (_, model, child) {
+        builder: (_, value, child) {
           return Scaffold(
             // bottomNavigationBar: BottomNavigationBar(
             //   currentIndex: provider.currentIndex,
@@ -83,23 +133,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       height: Dimension.height20,
                     ),
-                    InkWell(
-                      onTap: () {
-                        FirebaseAuth.instance.signOut();
-                      },
-                      child: Row(
-                        children: [
-                          CustomText(text: 'logout'),
-                          SizedBox(
-                            width: Dimension.width5,
-                          ),
-                          const Icon(
-                            Icons.logout,
-                            color: Colors.white,
-                          )
-                        ],
-                      ),
-                    )
+                    TextButton.icon(
+                        onPressed: () {
+                          FirebaseAuth.instance.signOut();
+                        },
+                        icon: Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                        ),
+                        label: CustomText(
+                          text: 'Logout',
+                        )),
+                    TextButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => HistoryScreen()));
+                        },
+                        icon: const Icon(
+                          Icons.history,
+                          color: Colors.white,
+                        ),
+                        label: CustomText(
+                          text: 'History',
+                        ))
                   ],
                 ),
               ),
@@ -114,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height * 0.3,
                   child: UpperPart(
-                    model: model,
+                    model: value,
                     searchControler: searchControler,
                   ),
                 ),
@@ -129,35 +187,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                  stream: model.search.isEmpty
-                      ? FirebaseFirestore.instance
-                          .collection('donors')
-                          .snapshots()
-                      : FirebaseFirestore.instance
-                          .collection('donors')
-                          .where('blood_group',
-                              isEqualTo: model.search)
-                          .snapshots(),
+                    child: FutureBuilder<List<DonorsModel>>(
+                  future: value.search.isEmpty
+                      ? sortDonorlist()
+                      : searchDonorsList(value.search),
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
+                        itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return CustomContainer(
                             checkName: true,
-                            location: snapshot.data!.docs[index]['location'],
-                            bloodGroup: snapshot.data!.docs[index]
-                                ['blood_group'],
-                            name: snapshot.data!.docs[index]['name'],
-                            gender: snapshot.data!.docs[index]['gender'],
-                            number: snapshot.data!.docs[index]['phone'],
+                            location: snapshot.data![index].location,
+                            bloodGroup: snapshot.data![index].bloodGroup,
+                            name: snapshot.data![index].name,
+                            gender: snapshot.data![index].gender,
+                            number: snapshot.data![index].phone,
                           );
                         },
                       );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color.fromRGBO(244, 66, 54, 1),
+                        ),
+                      );
                     } else {
-                      return Center(
-                        child: CustomText(text: 'no donors available'),
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
                     }
                   },
@@ -183,6 +241,15 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
   }
 }
 
@@ -246,7 +313,8 @@ class UpperPart extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        model.setSearch(searchControler.text.toUpperCase().trim());
+                        model.setSearch(
+                            searchControler.text.toUpperCase().trim());
                         _formKey.currentState!.reset();
                       }
                     },

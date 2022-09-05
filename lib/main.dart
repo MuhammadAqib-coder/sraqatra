@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sra_qatra/screens/blood_request_screen.dart';
+import 'package:sra_qatra/screens/history_screen.dart';
 import 'package:sra_qatra/screens/home_screen.dart';
 import 'package:sra_qatra/screens/imran.dart';
 import 'package:sra_qatra/screens/intro_screen.dart';
@@ -45,17 +46,21 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: 
-        StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return LandingScreen();
-              } else {
-                return SigninScreen();
-              }
-          })
-           );
+        home: //HistoryScreen()
+            StreamBuilder(
+                stream: FirebaseAuth.instance.authStateChanges(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasData) {
+                    return LandingScreen();
+                  } else {
+                    return SigninScreen();
+                  }
+                })
+                );
   }
 }
 

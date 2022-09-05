@@ -92,11 +92,13 @@ class _SigninScreenState extends State<SigninScreen> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             ProgressDialog dialog = ProgressDialog(context,
+                                defaultLoadingWidget: CircularProgressIndicator(),
                                 title: const Text('signin'),
                                 message: const Text('please wait...'));
                             dialog.show();
                             await email_pass
-                                .signIn(emailControler.text.trim(), passControler.text.trim())
+                                .signIn(emailControler.text.trim(),
+                                    passControler.text.trim())
                                 .then((value) {
                               dialog.dismiss();
                               displaySnackbar(value);
@@ -140,7 +142,10 @@ class _SigninScreenState extends State<SigninScreen> {
   }
 
   void displaySnackbar(messege) async {
-    var snackBar = SnackBar(content: Text(messege));
+    var snackBar = SnackBar(
+      content: Text(messege),
+      backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

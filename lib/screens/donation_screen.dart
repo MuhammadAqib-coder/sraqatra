@@ -14,7 +14,10 @@ import 'package:sra_qatra/widgets/custom_textfield.dart';
 import '../services/dimension.dart';
 
 class DonationScreen extends StatefulWidget {
-  const DonationScreen({Key? key}) : super(key: key);
+  DonationScreen({Key? key, this.map, required this.provider})
+      : super(key: key);
+  Map<String, dynamic>? map;
+  final DropdownProvider provider;
 
   @override
   State<DonationScreen> createState() => _DonationScreenState();
@@ -28,12 +31,20 @@ class _DonationScreenState extends State<DonationScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    // _dateControler.text = widget.map == null? '': widget.map!['date'];
+    // _nameControler.text = widget.map == null? '': widget.map!['name'];
+    // _locControler.text = widget.map == null? '': widget.map!['location'];
+    // _phoneControler.text = widget.map == null? '': widget.map!['phone'];
+    final String bloodGroup = widget.provider.bloodGroup;
+     final String gender = widget.provider.gender;
     return ChangeNotifierProvider<DropdownProvider>(
       create: (_) {
         return DropdownProvider();
       },
       child: Consumer<DropdownProvider>(
         builder: ((context, model, child) {
+          // model.setBloodgroup(bloodGroup);
+          // model.setGender(gender);
           return Scaffold(
             appBar: AppBar(
               title: CustomText(text: 'JazakAllah ror'),
@@ -150,7 +161,8 @@ class _DonationScreenState extends State<DonationScreen> {
                                 _dateControler.text = '';
                                 model.setBloodgroup('blood group');
                                 model.setGender('gender');
-                                _displaySnackbar('Donor data saved Successfully');
+                                _displaySnackbar(
+                                    'Donor data saved Successfully');
                               } on LocationServiceDisabledException catch (e) {
                                 _displaySnackbar(e.toString());
                               }
@@ -160,7 +172,10 @@ class _DonationScreenState extends State<DonationScreen> {
                         style: ElevatedButton.styleFrom(
                           primary: const Color.fromRGBO(244, 66, 54, 1),
                         ),
-                        child: CustomText(text: 'Ready To Donate',fontSize: Dimension.height16,),
+                        child: CustomText(
+                          text: 'Ready To Donate',
+                          fontSize: Dimension.height16,
+                        ),
                       )
                     ],
                   ),
@@ -174,7 +189,10 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   void _displaySnackbar(value) {
-    var snackBar = SnackBar(content: Text(value),backgroundColor: const Color.fromRGBO(244, 66, 54, 1),);
+    var snackBar = SnackBar(
+      content: Text(value),
+      backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

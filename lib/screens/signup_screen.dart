@@ -115,6 +115,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         onPressed: () async {
                           if (_fromKey.currentState!.validate()) {
                             ProgressDialog dialog = ProgressDialog(context,
+                          
                                 title: const Text('signUp'),
                                 message: const Text('please wait...'));
                             if (passControler.text.trim() ==
@@ -126,6 +127,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   nameControler.text.trim(),
                                   fnameControler.text.trim(),
                                   locControler.text.trim());
+                              Navigator.pop(context);
+
                               //_fromKey.currentState!.reset();
                               emailControler.text = '';
                               passControler.text = '';
@@ -174,7 +177,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void displaySnackbar(message) {
-    var snackBar = SnackBar(content: Text(message));
+    var snackBar = SnackBar(content: Text(message),backgroundColor: const Color.fromRGBO(244, 66, 54, 1),);
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

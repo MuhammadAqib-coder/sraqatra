@@ -15,7 +15,7 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  final pages = const [BloodRequestScreen(), HomeScreen(), DonationScreen()];
+  final pages =  [BloodRequestScreen(), HomeScreen(), DonationScreen()];
   @override
   Widget build(BuildContext context) {
     //final provider = Provider.of<DropdownProvider>(context);

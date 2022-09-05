@@ -31,7 +31,7 @@ class EmailPasswordAuth {
         'location': location,
         'password': password
       });
-      FirebaseAuth.instance.signOut();
+      //await FirebaseAuth.instance.signOut();
       return 'succssfully SignedUp';
     } on FirebaseAuthException catch (e) {
       //print(e);
@@ -40,6 +40,7 @@ class EmailPasswordAuth {
       } else if (e.code == 'email-already-in-use') {
         return 'user already exist';
       } else {
+        print(e.toString());
         return 'something went wrong';
       }
     }
