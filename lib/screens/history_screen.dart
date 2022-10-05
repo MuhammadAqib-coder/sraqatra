@@ -1,16 +1,12 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:sra_qatra/models/donors_model.dart';
+import 'package:sra_qatra/res/app_colors.dart';
 import 'package:sra_qatra/services/dimension.dart';
 import 'package:sra_qatra/widgets/custom_container.dart';
 import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/delete_update.dart';
-
-import '../services/location_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
@@ -21,37 +17,59 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   Position? position;
-  double? lat, lng;
-  List<DonorsModel> donorsList = [];
+  // double? lat, lng;
+  // List<DonorsModel> donorsList = [];
   // late DonorsModel model;
-  // bool test = false;
+  bool testDonor = false;
+  bool testAccepter = false;
+  // bool donorExist = false;
+  // bool accepterExist = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // FirebaseFirestore.instance
-    //     .collection()
+    //     .collection('donors')
     //     .doc(FirebaseAuth.instance.currentUser!.uid)
     //     .get()
     //     .then((DocumentSnapshot documentSnapshot) {
     //   if (documentSnapshot.exists) {
-    //     model = DonorsModel.fromJson(documentSnapshot.data());
-    //     test = true;
-    //     setState(() {});
+    //     donorExist = true;
     //   }
     // });
-    // getData();
+    //getData('donors');
     //sortDonorlist();
   }
 
-  // getData() async {
-  //   await FirebaseFirestore.instance
-  //       .collection('donors')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get()
-  //       .then((value) {
-  //     model = DonorsModel.fromJson(value.data());
-  //   });
+  // getData(value) async {
+  //   if (value == 'donors') {
+  //     await FirebaseFirestore.instance
+  //         .collection(value)
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .get()
+  //         .then((DocumentSnapshot snapshot) {
+  //       if (snapshot.exists) {
+  //         donorExist = !donorExist;
+  //         setState(() {
+            
+  //         });
+  //       }
+  //     });
+  //   } else {
+  //     await FirebaseFirestore.instance
+  //         .collection(value)
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .get()
+  //         .then((DocumentSnapshot snapshot) {
+  //       if (snapshot.exists) {
+  //         accepterExist = !accepterExist;
+  //         setState(() {
+            
+  //         });
+  //       }
+  //     });
+  //   }
+  //  // setState(() {});
   // }
 
   // Future<void> sortDonorlist() async {
@@ -98,7 +116,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         appBar: AppBar(
           title: const Text('History'),
           centerTitle: true,
-          backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
+          backgroundColor: AppColors.redColor,
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 15.0),
@@ -108,7 +126,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               CustomText(
                 text: 'Request as a Donor',
                 fontSize: 18,
-                color: const Color.fromRGBO(244, 66, 54, 1),
+                color: AppColors.redColor,
               ),
               SizedBox(
                 height: Dimension.height15,
@@ -116,55 +134,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Row(
                 children: [
                   Expanded(
-                      // child: test
-                      //     ? CustomContainer(
-                      //         location: model.location,
-                      //         bloodGroup: model.bloodGroup,
-                      //         number: model.phone,
-                      //         checkName: true,
-                      //         gender: model.gender,
-                      //         name: model.name,
-                      //       )
-                      //     : const Text('Loading')
-                      child:FutureBuilder<DocumentSnapshot>(
-                        future: FirebaseFirestore.instance
-                            .collection('donors')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                            .get(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return const Center(
-                              child: Text('something went wrong'),
-                            );
-                          } else if (snapshot.hasData && !snapshot.data!.exists) {
-                            return const Center(
-                              child: Text('Document not exist'),
-                            );
-                          } else if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            Map<String, dynamic> data =
-                                snapshot.data!.data() as Map<String, dynamic>;
-                            // var model = snapshot.data!.get('location');
-                            // var loc = model!['location'];
-                            return CustomContainer(
-                              location: data['location'],
-                              bloodGroup: data['blood_group'],
-                              number: data['phone'],
-                              checkName: true,
-                              gender: data['gender'],
-                              name: data['name'],
-                            );
-                          } else {
-                            return const Center(
-                              child: Text('no donor request'),
-                            );
-                          }
-                        },
-                      ),
-                      ),
-                  const DeleteAndUpdate(
-                    collectionName: 'donors',
-                  )
+                    
+                    child: StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('donors')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text('something went wrong'),
+                          );
+                        } else if (snapshot.hasData && !snapshot.data!.exists) {
+                          
+                          return const Center(
+                            child: Text('Document not exist'),
+                          );
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          Map<String, dynamic> data =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                       
+                          return CustomContainer(
+                            location: data['location'],
+                            bloodGroup: data['blood_group'],
+                            number: data['phone'],
+                            checkName: true,
+                            gender: data['gender'],
+                            name: data['name'],
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                      const DeleteAndUpdate(
+                          collectionName: 'donors',
+                        )
                 ],
               ),
               SizedBox(
@@ -172,7 +181,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
               CustomText(
                 text: 'Request as an Accepter',
-                color: const Color.fromRGBO(244, 66, 54, 1),
+                color: AppColors.redColor,
                 fontSize: 18,
               ),
               SizedBox(
@@ -181,17 +190,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: FutureBuilder<DocumentSnapshot>(
-                      future: FirebaseFirestore.instance
+                    child: StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
                           .collection('accepters')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .get(),
+                          .snapshots(),
                       builder: (_, snapshot) {
                         if (snapshot.hasError) {
                           return const Center(
                             child: Text('something went wrong'),
                           );
                         } else if (snapshot.hasData && !snapshot.data!.exists) {
+                          
                           return const Center(
                             child: Text('Document not exist'),
                           );
@@ -214,9 +224,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       },
                     ),
                   ),
-                 const DeleteAndUpdate(
-                    collectionName: 'accepters',
-                  )
+                      const DeleteAndUpdate(
+                          collectionName: 'accepters',
+                        )
                 ],
               )
             ],

@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 
 class DropdownProvider extends ChangeNotifier {
@@ -7,6 +8,22 @@ class DropdownProvider extends ChangeNotifier {
   bool _password = true;
   bool _confirmPass = true;
   String _search = '';
+  bool _dispose = false;
+  
+
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   if (_dispose) {
+  //     super.dispose();
+  //   }
+  // }
+
+  // @override
+  // void notifyListeners() {
+  //   // TODO: implement notifyListeners
+  //   super.notifyListeners();
+  // }
 
   String get bloodGroup {
     return _bloodGroup;

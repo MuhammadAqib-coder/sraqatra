@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sra_qatra/res/app_colors.dart';
 import 'package:sra_qatra/services/dimension.dart';
 
 class NextContainer extends StatelessWidget {
@@ -14,13 +15,13 @@ class NextContainer extends StatelessWidget {
           height: Dimension.height50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Dimension.height10),
-            color: const Color.fromRGBO(244, 66, 54, 1),
+            color: AppColors.redColor,
           ),
           child: Transform.rotate(
             angle: -45,
             child: Icon(
               icon,
-              color: Colors.white,
+              color: AppColors.whiteColor,
             ),
           ),
         ));

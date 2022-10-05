@@ -3,12 +3,15 @@
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
-import 'package:sra_qatra/screens/signup_screen.dart';
+import 'package:sra_qatra/res/app_colors.dart';
+import 'package:sra_qatra/routes/routes_name.dart';
 import 'package:sra_qatra/services/dimension.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 import 'package:sra_qatra/services/email_password_auth.dart';
 import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
+
+import '../utils/utils.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({Key? key}) : super(key: key);
@@ -19,7 +22,7 @@ class SigninScreen extends StatefulWidget {
 
 class _SigninScreenState extends State<SigninScreen> {
   final _formKey = GlobalKey<FormState>();
-  final email_pass = EmailPasswordAuth();
+  final emailPass = EmailPasswordAuth();
   final emailControler = TextEditingController();
   final passControler = TextEditingController();
   @override
@@ -30,7 +33,7 @@ class _SigninScreenState extends State<SigninScreen> {
       builder: (context, model, child) {
         return Scaffold(
           body: Padding(
-            padding: const EdgeInsets.only(top: 50),
+            padding:  EdgeInsets.only(top: Dimension.height50),
             child: SingleChildScrollView(
               child: Form(
                   key: _formKey,
@@ -55,7 +58,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         height: Dimension.height10,
                       ),
                       CustomTextField(
-                        icon: Icons.email_outlined,
+                        icon: Icons.alternate_email,
                         labelText: 'email',
                         controller: emailControler,
                         onPressed: () {},
@@ -77,11 +80,14 @@ class _SigninScreenState extends State<SigninScreen> {
                       Padding(
                         padding: EdgeInsets.only(left: Dimension.width20),
                         child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, RoutesName.resetPasswordScreen);
+                            },
                             child: const Text(
                               'forget password?',
                               style: TextStyle(
-                                  color: Color.fromRGBO(244, 66, 54, 1)),
+                                  color: AppColors.redColor),
                             )),
                       ),
                       SizedBox(
@@ -92,21 +98,22 @@ class _SigninScreenState extends State<SigninScreen> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             ProgressDialog dialog = ProgressDialog(context,
-                                defaultLoadingWidget: CircularProgressIndicator(),
+                                defaultLoadingWidget:
+                                    const CircularProgressIndicator(),
                                 title: const Text('signin'),
                                 message: const Text('please wait...'));
                             dialog.show();
-                            await email_pass
+                            await emailPass
                                 .signIn(emailControler.text.trim(),
                                     passControler.text.trim())
                                 .then((value) {
                               dialog.dismiss();
-                              displaySnackbar(value);
+                              Utils.displaySnackbar(value, context);
                             });
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                            primary: const Color.fromRGBO(244, 66, 54, 1)),
+                            primary: AppColors.redColor),
                         child: CustomText(text: 'SignIn'),
                       )),
                       SizedBox(
@@ -117,18 +124,16 @@ class _SigninScreenState extends State<SigninScreen> {
                         children: [
                           CustomText(
                             text: 'create account?',
-                            color: const Color.fromRGBO(244, 66, 54, 1),
+                            color: AppColors.redColor,
                           ),
                           TextButton(
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => const SignupScreen()));
+                                Navigator.pushNamed(
+                                    context, RoutesName.signupScreen);
                               },
                               child: CustomText(
                                 text: 'SignUp',
-                                color: const Color.fromRGBO(244, 66, 54, 1),
+                                color: AppColors.redColor,
                               ))
                         ],
                       )
@@ -139,13 +144,5 @@ class _SigninScreenState extends State<SigninScreen> {
         );
       },
     ));
-  }
-
-  void displaySnackbar(messege) async {
-    var snackBar = SnackBar(
-      content: Text(messege),
-      backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

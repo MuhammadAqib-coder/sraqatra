@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 class EmailPasswordAuth {
   Future<String> signIn(String email, String password) async {
@@ -13,8 +12,11 @@ class EmailPasswordAuth {
         return 'user not registered';
       } else if (e.code == 'wrong-password') {
         return 'wrong password';
+      } else if (e.code == 'invalid-email') {
+        return 'invalid email';
       } else {
-        return 'invalid email or password';
+        // print(e.toString());
+        return 'no internet connection';
       }
     }
   }
@@ -31,7 +33,7 @@ class EmailPasswordAuth {
         'location': location,
         'password': password
       });
-      //await FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signOut();
       return 'succssfully SignedUp';
     } on FirebaseAuthException catch (e) {
       //print(e);
@@ -39,9 +41,10 @@ class EmailPasswordAuth {
         return 'password is too weak';
       } else if (e.code == 'email-already-in-use') {
         return 'user already exist';
+      } else if (e.code == 'invalid-email') {
+        return 'invalid email';
       } else {
-        print(e.toString());
-        return 'something went wrong';
+        return 'no internet connection';
       }
     }
   }

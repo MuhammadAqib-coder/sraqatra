@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
+import 'package:sra_qatra/res/app_colors.dart';
+import 'package:sra_qatra/routes/routes_name.dart';
 import 'package:sra_qatra/screens/signin_screen.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 import 'package:sra_qatra/services/email_password_auth.dart';
@@ -11,6 +13,7 @@ import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
 import '../services/dimension.dart';
+import '../utils/utils.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -36,7 +39,7 @@ class _SignupScreenState extends State<SignupScreen> {
       builder: ((context, model, child) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
+            backgroundColor: AppColors.redColor,
             title: CustomText(text: 'SignUp'),
             centerTitle: true,
           ),
@@ -115,7 +118,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         onPressed: () async {
                           if (_fromKey.currentState!.validate()) {
                             ProgressDialog dialog = ProgressDialog(context,
-                          
                                 title: const Text('signUp'),
                                 message: const Text('please wait...'));
                             if (passControler.text.trim() ==
@@ -127,7 +129,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   nameControler.text.trim(),
                                   fnameControler.text.trim(),
                                   locControler.text.trim());
-                              Navigator.pop(context);
+                              // ignore: use_build_context_synchronously
+                             // Navigator.pop(context);
 
                               //_fromKey.currentState!.reset();
                               emailControler.text = '';
@@ -137,14 +140,16 @@ class _SignupScreenState extends State<SignupScreen> {
                               fnameControler.text = '';
                               locControler.text = '';
                               dialog.dismiss();
-                              displaySnackbar(value);
+                              // ignore: use_build_context_synchronously
+                              Utils.displaySnackbar(value, context);
                             } else {
-                              displaySnackbar('password not match');
+                              Utils.displaySnackbar(
+                                  'password not match', context);
                             }
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                            primary: const Color.fromRGBO(244, 66, 54, 1)),
+                            primary: AppColors.redColor),
                         child: CustomText(text: 'submit'),
                       ),
                       Row(
@@ -152,18 +157,16 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           CustomText(
                             text: 'Already have an Account?',
-                            color: const Color.fromRGBO(244, 66, 54, 1),
+                            color: AppColors.redColor,
                           ),
                           TextButton(
                               onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => const SigninScreen()));
+                                Navigator.popAndPushNamed(
+                                    context, RoutesName.signinScreen);
                               },
                               child: CustomText(
                                 text: 'SignIn',
-                                color: const Color.fromRGBO(244, 66, 54, 1),
+                                color: AppColors.redColor,
                               ))
                         ],
                       )
@@ -174,10 +177,5 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       }),
     ));
-  }
-
-  void displaySnackbar(message) {
-    var snackBar = SnackBar(content: Text(message),backgroundColor: const Color.fromRGBO(244, 66, 54, 1),);
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

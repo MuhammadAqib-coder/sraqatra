@@ -11,13 +11,18 @@ import 'package:sra_qatra/widgets/custom_dropdown.dart';
 import 'package:sra_qatra/widgets/custom_text.dart';
 import 'package:sra_qatra/widgets/custom_textfield.dart';
 
+import '../res/app_colors.dart';
 import '../services/dimension.dart';
+import '../utils/utils.dart';
 
 class DonationScreen extends StatefulWidget {
-  DonationScreen({Key? key, this.map, required this.provider})
-      : super(key: key);
+  DonationScreen({
+    Key? key,
+    this.map,
+    this.provider
+  }) : super(key: key);
   Map<String, dynamic>? map;
-  final DropdownProvider provider;
+  DropdownProvider? provider;
 
   @override
   State<DonationScreen> createState() => _DonationScreenState();
@@ -29,38 +34,65 @@ class _DonationScreenState extends State<DonationScreen> {
   final _locControler = TextEditingController();
   final _phoneControler = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  late bool exist;
+  late Position position;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('donors')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => exist = value.exists);
+    getPosition();
+    // widget.map = ModalRoute.of(context)!.settings.arguments as widget.map<String, dynamic>;
+  }
+
+  getPosition() async {
+    try {
+      position = await LocationService.determinePosition();
+    } on LocationServiceDisabledException catch (e) {
+      Utils.displaySnackbar(e.toString(), context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // _dateControler.text = widget.map == null? '': widget.map!['date'];
-    // _nameControler.text = widget.map == null? '': widget.map!['name'];
-    // _locControler.text = widget.map == null? '': widget.map!['location'];
-    // _phoneControler.text = widget.map == null? '': widget.map!['phone'];
-    final String bloodGroup = widget.provider.bloodGroup;
-     final String gender = widget.provider.gender;
-    return ChangeNotifierProvider<DropdownProvider>(
-      create: (_) {
-        return DropdownProvider();
-      },
-      child: Consumer<DropdownProvider>(
-        builder: ((context, model, child) {
-          // model.setBloodgroup(bloodGroup);
-          // model.setGender(gender);
-          return Scaffold(
-            appBar: AppBar(
-              title: CustomText(text: 'JazakAllah ror'),
-              centerTitle: true,
-              backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
-            ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(Dimension.height10),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
+    //var thisProvider = Provider.of<DropdownProvider>(context, listen: false);
+    _dateControler.text = widget.map == null ? '' : widget.map!['date'];
+    _nameControler.text = widget.map == null ? '' : widget.map!['name'];
+    _locControler.text = widget.map == null ? '' : widget.map!['location'];
+    _phoneControler.text = widget.map == null ? '' : widget.map!['phone'];
+    // final String bloodGroup = widget.DUprovider == null
+    //     ? 'blood group'
+    //     : widget.DUprovider!.bloodGroup;
+    // final String gender =
+    //     widget.DUprovider == null ? 'gender' : widget.DUprovider!.gender;
+
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   thisProvider.setBloodgroup(bloodGroup);
+    //   thisProvider.setGender(gender);
+    // });
+    return Scaffold(
+      appBar: AppBar(
+        title: CustomText(text: 'JazakAllah ror'),
+        centerTitle: true,
+        backgroundColor: AppColors.redColor,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(Dimension.height10),
+          child: Form(
+              key: _formKey,
+              child: Consumer<DropdownProvider>(
+                builder: ((context, value, child) {
+                  return Column(
                     children: [
                       CircleAvatar(
                         radius: Dimension.height50,
-                        backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
+                        backgroundColor: AppColors.redColor,
                       ),
                       SizedBox(
                         height: Dimension.height5,
@@ -98,14 +130,8 @@ class _DonationScreenState extends State<DonationScreen> {
                       ),
                       Row(
                         children: [
-                          Expanded(
-                              child: BloodDropdown(
-                            provider: model,
-                          )),
-                          Expanded(
-                              child: GenderDropdown(
-                            provider: model,
-                          ))
+                          Expanded(child: BloodDropdown(provider: value)),
+                          Expanded(child: GenderDropdown(provider: value))
                         ],
                       ),
                       const SizedBox(
@@ -133,44 +159,32 @@ class _DonationScreenState extends State<DonationScreen> {
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            if (model.bloodGroup == 'blood group' ||
-                                model.gender == 'gender') {
-                              _displaySnackbar(
-                                  'please enter bloodGroup or gender ');
+                            if (!exist || widget.map == null) {
+                              if (value.bloodGroup == 'blood group' ||
+                                  value.gender == 'gender') {
+                                Utils.displaySnackbar(
+                                    'please enter bloodGroup or gender ',
+                                    context);
+                              } else {
+                                setAndUpdateDoc(
+                                  'set',
+                                  value,
+                                );
+                              }
                             } else {
-                              try {
-                                Position position =
-                                    await LocationService.determinePosition();
-                                FirebaseFirestore.instance
-                                    .collection('donors')
-                                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                                    .set({
-                                  'name': _nameControler.text.trim(),
-                                  'location': _locControler.text.trim(),
-                                  'phone': _phoneControler.text.trim(),
-                                  'blood_group': model.bloodGroup,
-                                  'gender': model.gender,
-                                  'date': _dateControler.text.trim(),
-                                  'latitude': position.latitude,
-                                  'longitude': position.longitude
-                                });
-                                //_formKey.currentState!.reset();
-                                _nameControler.text = '';
-                                _locControler.text = '';
-                                _phoneControler.text = '';
-                                _dateControler.text = '';
-                                model.setBloodgroup('blood group');
-                                model.setGender('gender');
-                                _displaySnackbar(
-                                    'Donor data saved Successfully');
-                              } on LocationServiceDisabledException catch (e) {
-                                _displaySnackbar(e.toString());
+                              if (value.bloodGroup == 'blood group' ||
+                                  value.gender == 'gender') {
+                                Utils.displaySnackbar(
+                                    'please enter bloodGroup or gender ',
+                                    context);
+                              } else {
+                                setAndUpdateDoc('update', value);
                               }
                             }
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: const Color.fromRGBO(244, 66, 54, 1),
+                          primary: AppColors.redColor,
                         ),
                         child: CustomText(
                           text: 'Ready To Donate',
@@ -178,21 +192,51 @@ class _DonationScreenState extends State<DonationScreen> {
                         ),
                       )
                     ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
+                  );
+                }),
+              )),
+        ),
       ),
     );
   }
 
-  void _displaySnackbar(value) {
-    var snackBar = SnackBar(
-      content: Text(value),
-      backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  void setAndUpdateDoc(message, model) async {
+    if (message == 'set') {
+      FirebaseFirestore.instance
+          .collection('donors')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({
+        'name': _nameControler.text.trim(),
+        'location': _locControler.text.trim(),
+        'phone': _phoneControler.text.trim(),
+        'blood_group': model.bloodGroup,
+        'gender': model.gender,
+        'date': _dateControler.text.trim(),
+        'latitude': position.latitude,
+        'longitude': position.longitude
+      });
+      Utils.displaySnackbar(' Data saved Successfully', context);
+    } else {
+      FirebaseFirestore.instance
+          .collection('donors')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+        'name': _nameControler.text.trim(),
+        'location': _locControler.text.trim(),
+        'phone': _phoneControler.text.trim(),
+        'blood_group': model.bloodGroup,
+        'gender': model.gender,
+        'date': _dateControler.text.trim(),
+        'latitude': position.latitude,
+        'longitude': position.longitude
+      });
+      Utils.displaySnackbar(' Data Updated Successfully', context);
+    }
+    _nameControler.text = '';
+    _locControler.text = '';
+    _phoneControler.text = '';
+    _dateControler.text = '';
+    model.setBloodgroup('blood group');
+    model.setGender('gender');
   }
 }

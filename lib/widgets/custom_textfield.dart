@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sra_qatra/res/app_colors.dart';
 
 import '../services/dimension.dart';
 
@@ -28,10 +29,9 @@ class CustomTextField extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.09,
       child: TextFormField(
         maxLength: length,
-
         keyboardType: type,
         obscureText: textObsecure,
-        cursorColor: Colors.black,
+        cursorColor: AppColors.redColor,
         controller: controller,
         validator: (value) {
           if (value!.isEmpty) {
@@ -40,35 +40,35 @@ class CustomTextField extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
-          counterText: '',
+            counterText: '',
             border: InputBorder.none,
             filled: true,
             fillColor: Colors.white,
             labelText: labelText,
-            labelStyle: const TextStyle(
-              color: Colors.black,
+            labelStyle: TextStyle(
+              color: AppColors.redColor,
             ),
             suffixIcon: IconButton(
               icon: Icon(icon),
-              color: Colors.black,
+              color: AppColors.redColor,
               onPressed: onPressed,
             ),
             focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimension.height10),
-                borderSide:
-                    BorderSide(color: Colors.black, width: Dimension.width2)),
+                borderSide: BorderSide(
+                    color: AppColors.redColor, width: Dimension.width2)),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimension.height10),
-                borderSide:
-                    BorderSide(color: Colors.black, width: Dimension.width2)),
+                borderSide: BorderSide(
+                    color: AppColors.redColor, width: Dimension.width2)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimension.height10),
-                borderSide:
-                    BorderSide(color: Colors.black, width: Dimension.width2)),
+                borderSide: BorderSide(
+                    color: AppColors.redColor, width: Dimension.width2)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimension.height10),
-                borderSide:
-                    BorderSide(color: Colors.black, width: Dimension.width2))),
+                borderSide: BorderSide(
+                    color: AppColors.redColor, width: Dimension.width2))),
       ),
     );
   }

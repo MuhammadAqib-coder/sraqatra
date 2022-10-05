@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../res/app_colors.dart';
 import '../services/dimension.dart';
 
 class CustomContainer extends StatelessWidget {
@@ -69,16 +70,18 @@ class LeadingPart extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.2,
       width: MediaQuery.of(context).size.width * 0.35,
       decoration: BoxDecoration(
-          color: const Color.fromRGBO(244, 66, 54, 1),
+          color: AppColors.redColor,
           borderRadius: BorderRadius.circular(Dimension.height10)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
+            textAlign: TextAlign.center,
             location,
             style: TextStyle(color: Colors.white, fontSize: Dimension.height18),
           ),
           Text(
+            textAlign: TextAlign.center,
             bloodGroup,
             style: TextStyle(fontSize: Dimension.height22, color: Colors.white),
           )

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
 
+import '../res/app_colors.dart';
 import '../services/dimension.dart';
 
 class BloodDropdown extends StatefulWidget {
@@ -35,7 +36,7 @@ class _BloodDropdownState extends State<BloodDropdown> {
       margin: EdgeInsets.only(left: Dimension.width10, right: Dimension.width5),
       padding: EdgeInsets.symmetric(horizontal: Dimension.width10),
       decoration: BoxDecoration(
-          color: const Color.fromRGBO(244, 66, 54, 1),
+          color: AppColors.redColor,
           borderRadius: BorderRadius.circular(Dimension.height10)),
       child: DropdownButton(
           isExpanded: true,
@@ -43,9 +44,9 @@ class _BloodDropdownState extends State<BloodDropdown> {
             Icons.arrow_drop_down_circle_outlined,
             color: Colors.white,
           ),
-          dropdownColor: const Color.fromRGBO(244, 66, 54, 1),
+          dropdownColor: AppColors.redColor,
           value: widget.provider.bloodGroup,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: AppColors.whiteColor),
           underline: const Divider(
             color: Colors.transparent,
           ),
@@ -55,8 +56,11 @@ class _BloodDropdownState extends State<BloodDropdown> {
                     child: Text(item),
                   ))
               .toList(),
-          onChanged: (String? value) {
-            widget.provider.setBloodgroup(value);
+          onChanged: (String? newValue) {
+            widget.provider.setBloodgroup(newValue);
+            setState(() {
+              
+            });
           }),
     );
   }
@@ -80,19 +84,20 @@ class _GenderDropdownState extends State<GenderDropdown> {
                 left: Dimension.width5, right: Dimension.width10),
             padding: EdgeInsets.symmetric(horizontal: Dimension.width10),
             decoration: BoxDecoration(
-                color: const Color.fromRGBO(244, 66, 54, 1),
+                color: AppColors.redColor,
                 borderRadius: BorderRadius.circular(Dimension.height10)),
             child: DropdownButton(
-              dropdownColor: const Color.fromRGBO(244, 66, 54, 1),
+              dropdownColor: AppColors.redColor,
               isExpanded: true,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.whiteColor),
               icon: const Icon(
                 Icons.arrow_drop_down_circle_outlined,
-                color: Colors.white,
+                color: AppColors.whiteColor,
               ),
               underline: const Divider(
                 color: Colors.transparent,
               ),
+
               value: widget.provider.gender,
               items: list
                   .map((item) => DropdownMenuItem(
@@ -100,8 +105,8 @@ class _GenderDropdownState extends State<GenderDropdown> {
                         child: Text(item),
                       ))
                   .toList(),
-              onChanged: (String? value) {
-                widget.provider.setGender(value);
+              onChanged: (String? newValue) {
+                widget.provider.setGender(newValue);
               },
             ),
           );
