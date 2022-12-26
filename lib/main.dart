@@ -14,6 +14,7 @@ import 'package:sra_qatra/screens/home_screen.dart';
 import 'package:sra_qatra/screens/imran.dart';
 import 'package:sra_qatra/screens/intro_screen.dart';
 import 'package:sra_qatra/screens/landing_screen.dart';
+import 'package:sra_qatra/screens/no_internet_screen.dart';
 import 'package:sra_qatra/screens/signin_screen.dart';
 import 'package:sra_qatra/screens/signup_screen.dart';
 import 'package:sra_qatra/services/dropdown_provider.dart';
@@ -27,16 +28,17 @@ void main() async {
   await Firebase.initializeApp();
   prefs = await SharedPreferences.getInstance();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+  Connectivity connection = Connectivity();
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-   // checkConnection();
+    // checkConnection();
 
     show = prefs.getBool('ON_BOARDING') ?? true;
     return ChangeNotifierProvider<DropdownProvider>(
@@ -44,34 +46,44 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           color: AppColors.redColor,
           debugShowCheckedModeBanner: false,
-          title: 'Blood Potal',
+          title: 'Blood Portal',
           theme: ThemeData(
             primarySwatch: Colors.red,
           ),
           onGenerateRoute: Routes.generateRoute,
-          home: show
-              ? const IntroScreen()
-              : StreamBuilder(
-                  stream: FirebaseAuth.instance.authStateChanges(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasData) {
-                      return LandingScreen();
-                    } else {
-                      return SigninScreen();
-                    }
-                  })),
+          home: StreamBuilder(
+            stream: connection.onConnectivityChanged,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final state = snapshot.data;
+
+                return show
+                    ? const IntroScreen()
+                    : StreamBuilder(
+                        stream: FirebaseAuth.instance.authStateChanges(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasData) {
+                            return LandingScreen();
+                          } else {
+                            return SigninScreen();
+                          }
+                        });
+              } else {
+                return NoInternetScreen();
+              }
+            },
+          )),
     );
   }
 
   void checkConnection() async {
     final Connectivity connectivity = Connectivity();
     ConnectivityResult result = await connectivity.checkConnectivity();
-    if(result == ConnectivityResult.none){
-
-    }
+    if (result == ConnectivityResult.none) {}
   }
 }

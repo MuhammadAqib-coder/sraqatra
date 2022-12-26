@@ -5,20 +5,26 @@ import '../../services/dropdown_provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../app_colors.dart';
 
-class UpperPart extends StatelessWidget {
+class UpperPart extends StatefulWidget {
   UpperPart({Key? key, required this.searchControler, required this.model})
       : super(key: key);
   // var searchControler = TextEditingController();
   final TextEditingController searchControler;
-  final _formKey = GlobalKey<FormState>();
   DropdownProvider model;
+
+  @override
+  State<UpperPart> createState() => _UpperPartState();
+}
+
+class _UpperPartState extends State<UpperPart> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Container(
-          height: MediaQuery.of(context).size.height * 0.2,
+          height: MediaQuery.of(context).size.height * 0.1,
           width: double.infinity,
           decoration: const BoxDecoration(color: AppColors.redColor),
         ),
@@ -46,39 +52,54 @@ class UpperPart extends StatelessWidget {
                   ],
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(Dimension.height10)),
-              height: MediaQuery.of(context).size.height * 0.25,
+              height: MediaQuery.of(context).size.height * 0.15,
               width: double.infinity,
               child: Column(
                 children: [
-                  Form(
-                    key: _formKey,
-                    child: CustomTextField(
-                      icon: Icons.bloodtype,
-                      labelText: "blood type",
-                      controller: searchControler,
-                      type: TextInputType.text,
-                      onPressed: () {},
-                    ),
-                  ),
+                  TextField(
+                    controller: widget.searchControler,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.bloodtype),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide:
+                                const BorderSide(color: AppColors.redColor))),
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  )
+
+                  // Form(
+                  //   key: _formKey,
+                  //   child: CustomTextField(
+                  //     icon: Icons.bloodtype,
+                  //     labelText: "blood type",
+                  //     controller: searchControler,
+                  //     type: TextInputType.text,
+                  //     onPressed: () {},
+                  //   ),
+                  // ),
+                  ,
                   SizedBox(
                     height: Dimension.height30,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        model.setSearch(
-                            searchControler.text.toUpperCase().trim());
-                        _formKey.currentState!.reset();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: AppColors.redColor,
-                    ),
-                    child: Text(
-                      'search',
-                      style: TextStyle(fontSize: Dimension.height16),
-                    ),
-                  )
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     if (_formKey.currentState!.validate()) {
+                  //       model.setSearch(
+                  //           searchControler.text.toUpperCase().trim());
+                  //       _formKey.currentState!.reset();
+                  //     }
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: AppColors.redColor,
+                  //   ),
+                  //   child: Text(
+                  //     'search',
+                  //     style: TextStyle(fontSize: Dimension.height16),
+                  //   ),
+                  // )
                 ],
               )),
         ),

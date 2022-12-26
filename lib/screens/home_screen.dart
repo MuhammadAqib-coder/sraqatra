@@ -89,208 +89,240 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: provider.currentIndex,
-      //   onTap: (index) {
-      //     provider.setCurrentIndex(index);
-      //   },
-      //   items: [
-      //     BottomNavigationBarItem(
-      //         icon: Icon(
-      //           Icons.bloodtype,
-      //           color: Colors.white,
-      //         ),
-      //         label: "Donors"),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(
-      //           Icons.home,
-      //           color: Colors.white,
-      //         ),
-      //         label: "Home"),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(
-      //           Icons.bloodtype,
-      //           color: Colors.white,
-      //         ),
-      //         label: "Accepters")
-      //   ],
-      // ),
-      drawer: Drawer(
-        backgroundColor: AppColors.redColor,
-        child: DrawerHeader(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: Dimension.height50,
-                backgroundColor: Colors.white,
-              ),
-              SizedBox(
-                height: Dimension.height20,
-              ),
-              CustomText(text: FirebaseAuth.instance.currentUser!.email!),
-              SizedBox(
-                height: Dimension.height10,
-              ),
-              const Divider(
-                color: AppColors.whiteColor,
-                // indent: 10,
-                // endIndent: 10,
-                thickness: 2,
-              ),
-              SizedBox(
-                height: Dimension.height20,
-              ),
-              TextButton.icon(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                  },
-                  icon: const Icon(
-                    Icons.logout,
-                    color: AppColors.whiteColor,
-                  ),
-                  label: CustomText(
-                    text: 'Logout',
-                  )),
-              TextButton.icon(
-                  onPressed: () {
-                    Navigator.popAndPushNamed(
-                        context, RoutesName.historyScreen);
-                  },
-                  icon: const Icon(
-                    Icons.history,
-                    color: AppColors.whiteColor,
-                  ),
-                  label: CustomText(
-                    text: 'History',
-                  ))
-            ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        // bottomNavigationBar: BottomNavigationBar(
+        //   currentIndex: provider.currentIndex,
+        //   onTap: (index) {
+        //     provider.setCurrentIndex(index);
+        //   },
+        //   items: [
+        //     BottomNavigationBarItem(
+        //         icon: Icon(
+        //           Icons.bloodtype,
+        //           color: Colors.white,
+        //         ),
+        //         label: "Donors"),
+        //     BottomNavigationBarItem(
+        //         icon: Icon(
+        //           Icons.home,
+        //           color: Colors.white,
+        //         ),
+        //         label: "Home"),
+        //     BottomNavigationBarItem(
+        //         icon: Icon(
+        //           Icons.bloodtype,
+        //           color: Colors.white,
+        //         ),
+        //         label: "Accepters")
+        //   ],
+        // ),
+        drawer: Drawer(
+          backgroundColor: AppColors.redColor,
+          child: DrawerHeader(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: Dimension.height50,
+                  backgroundColor: Colors.white,
+                ),
+                SizedBox(
+                  height: Dimension.height20,
+                ),
+                CustomText(text: FirebaseAuth.instance.currentUser!.email!),
+                SizedBox(
+                  height: Dimension.height10,
+                ),
+                const Divider(
+                  color: AppColors.whiteColor,
+                  // indent: 10,
+                  // endIndent: 10,
+                  thickness: 2,
+                ),
+                SizedBox(
+                  height: Dimension.height20,
+                ),
+                TextButton.icon(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: AppColors.whiteColor,
+                    ),
+                    label: CustomText(
+                      text: 'Logout',
+                    )),
+                TextButton.icon(
+                    onPressed: () {
+                      Navigator.popAndPushNamed(
+                          context, RoutesName.historyScreen);
+                    },
+                    icon: const Icon(
+                      Icons.history,
+                      color: AppColors.whiteColor,
+                    ),
+                    label: CustomText(
+                      text: 'History',
+                    ))
+              ],
+            ),
           ),
         ),
-      ),
-      appBar: AppBar(
-        backgroundColor: AppColors.redColor,
-        elevation: 0,
-      ),
-      body: Consumer<DropdownProvider>(
-        builder: (context, value, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: UpperPart(
-                  model: value,
-                  searchControler: searchControler,
+        appBar: AppBar(
+          title: const Text('Donors'),
+          backgroundColor: AppColors.redColor,
+          elevation: 0,
+        ),
+        body: Consumer<DropdownProvider>(
+          builder: (context, value, child) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Container(
+                //   height: MediaQuery.of(context).size.height * 0.3,
+                //   child: UpperPart(
+                //     model: value,
+                //     searchControler: searchControler,
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchControler,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        hintText: 'enter blood group',
+                        hintStyle: TextStyle(color: AppColors.redColor),
+                        suffixIcon: Icon(
+                          Icons.bloodtype,
+                          color: AppColors.redColor,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(color: AppColors.redColor)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide:
+                                const BorderSide(color: AppColors.redColor))),
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: Dimension.height20,
-              ),
-              Padding(
-                  padding: EdgeInsets.all(Dimension.height8),
-                  child: CustomText(
-                    text: 'recommended donors',
-                    color: AppColors.redColor,
-                    fontSize: Dimension.height18,
-                  )),
-              Expanded(
-                  child: FutureBuilder<List<dynamic>>(
-                future: sortDonorlist(), //value.search.isEmpty
-                // ? sortDonorlist()
-                // : searchDonorsList(value.search),
-                builder: (_, snapshot) {
-                  int count = 0;
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        var group = snapshot.data![index].bloodGroup;
-                        if (value.search.isEmpty) {
-                          return CustomContainer(
-                            checkName: true,
-                            location: snapshot.data![index].location,
-                            bloodGroup: snapshot.data![index].bloodGroup,
-                            name: snapshot.data![index].name,
-                            gender: snapshot.data![index].gender,
-                            number: snapshot.data![index].phone,
-                          );
-                        } else if (group
-                            .toLowerCase()
-                            .contains(value.search.toLowerCase())) {
-                          //count++;
-                          // if (index == snapshot.data!.length) {
-                          //   value.setSearch('');
-                          // }
-                          return CustomContainer(
-                            checkName: true,
-                            location: snapshot.data![index].location,
-                            bloodGroup: snapshot.data![index].bloodGroup,
-                            name: snapshot.data![index].name,
-                            gender: snapshot.data![index].gender,
-                            number: snapshot.data![index].phone,
-                          );
-                        } else {
-                          //value.setSearch('');
-                          return
-                              //count > 0
-                              //     ? Padding(
-                              //         padding: EdgeInsets.all(Dimension.height50),
-                              //         child: Center(
-                              //           child: CustomText(
-                              //             text: 'Opps no donor found',
-                              //             color: AppColors.redColor,
-                              //             fontSize: Dimension.height20,
-                              //           ),
-                              //         ),
-                              //       )
-                              //     :
-                              Container();
-                        }
-                      },
-                    );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.redColor,
-                      ),
-                    );
-                  } else if (snapshot.data == null &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    return Center(
-                      child: CustomText(text: 'No Record Found'),
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.redColor,
-                      ),
-                    );
-                  }
-                },
-              ))
-            ],
-          );
-        },
+                SizedBox(
+                  height: Dimension.height10,
+                ),
+                Padding(
+                    padding: EdgeInsets.all(Dimension.height8),
+                    child: CustomText(
+                      text: 'recommended donors',
+                      color: AppColors.redColor,
+                      fontSize: Dimension.height18,
+                    )),
+                Expanded(
+                    child: FutureBuilder<List<dynamic>>(
+                  future: sortDonorlist(), //value.search.isEmpty
+                  // ? sortDonorlist()
+                  // : searchDonorsList(value.search),
+                  builder: (_, snapshot) {
+                    int count = 0;
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          var group = snapshot.data![index].bloodGroup;
+                          if (searchControler.text.isEmpty) {
+                            //value.search.isEpmty
+                            return CustomContainer(
+                              checkName: true,
+                              location: snapshot.data![index].location,
+                              bloodGroup: snapshot.data![index].bloodGroup,
+                              name: snapshot.data![index].name,
+                              gender: snapshot.data![index].gender,
+                              number: snapshot.data![index].phone,
+                            );
+                          } else if (group
+                              .toLowerCase()
+                              .contains(searchControler.text.trim())) {
+                            //value.search.toLowerCase
+                            //count++;
+                            // if (index == snapshot.data!.length) {
+                            //   value.setSearch('');
+                            // }
+                            return CustomContainer(
+                              checkName: true,
+                              location: snapshot.data![index].location,
+                              bloodGroup: snapshot.data![index].bloodGroup,
+                              name: snapshot.data![index].name,
+                              gender: snapshot.data![index].gender,
+                              number: snapshot.data![index].phone,
+                            );
+                          } else {
+                            //value.setSearch('');
+                            return
+                                //count > 0
+                                //     ? Padding(
+                                //         padding: EdgeInsets.all(Dimension.height50),
+                                //         child: Center(
+                                //           child: CustomText(
+                                //             text: 'Opps no donor found',
+                                //             color: AppColors.redColor,
+                                //             fontSize: Dimension.height20,
+                                //           ),
+                                //         ),
+                                //       )
+                                //     :
+                                Container();
+                          }
+                        },
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.redColor,
+                        ),
+                      );
+                    } else if (snapshot.data == null &&
+                        snapshot.connectionState == ConnectionState.done) {
+                      return Center(
+                        child: CustomText(text: 'No Record Found'),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.redColor,
+                        ),
+                      );
+                    }
+                  },
+                ))
+              ],
+            );
+          },
+        ),
+
+        //floating actiion button
+
+        // floatingActionButton: FloatingActionButton.extended(
+        //   onPressed: () {
+        //     Navigator.push(
+        //         context, MaterialPageRoute(builder: (_) => DonationScreen()));
+        //   },
+        //   label: Text(
+        //     "Be Donor",
+        //     style: TextStyle(fontSize: Dimension.height16),
+        //   ),
+        //   icon: const Icon(Icons.add),
+        //   backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
+        // ),
       ),
-
-      //floating actiion button
-
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: () {
-      //     Navigator.push(
-      //         context, MaterialPageRoute(builder: (_) => DonationScreen()));
-      //   },
-      //   label: Text(
-      //     "Be Donor",
-      //     style: TextStyle(fontSize: Dimension.height16),
-      //   ),
-      //   icon: const Icon(Icons.add),
-      //   backgroundColor: const Color.fromRGBO(244, 66, 54, 1),
-      // ),
     );
   }
 

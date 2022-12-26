@@ -27,7 +27,6 @@ class Routes {
       case RoutesName.homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case RoutesName.donationScreen:
-        
         return MaterialPageRoute(builder: (_) => DonationScreen());
       case RoutesName.requestBloodScreen:
         return MaterialPageRoute(builder: (_) => RequestBloodScreen());
@@ -37,8 +36,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const HistoryScreen());
       case RoutesName.resetPasswordScreen:
         return MaterialPageRoute(builder: (_) => const ResetPasswordScreen());
-        case RoutesName.myApp:
-        return MaterialPageRoute(builder: (_) => const MyApp());
+      case RoutesName.myApp:
+        return MaterialPageRoute(builder: (_) => MyApp());
       default:
         return MaterialPageRoute(
             builder: (_) => const Scaffold(
